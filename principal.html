@@ -25,10 +25,12 @@
 
     .logo-left {
       order: 1;
+      height: 30px;
     }
 
     .logo-right {
       order: 2;
+      height: 30px;
     }
 
     img {
@@ -65,10 +67,11 @@
 <body>
   <header>
     <div class="logo-left">
-      <img src="qaY4sfAy_400x400.jpg" alt="Logo Izquierdo">
+      <img src="../qaY4sfAy_400x400.jpg" alt="Logo Izquierdo" class="logo-left">
     </div>
+    <h5 id="titLang">  Español</h5>
     <div class="logo-right">
-      <img src="Logo_Fundació_Bofill.png" alt="Logo Derecho">
+      <img src="../Logo_Fundació_Bofill.png" alt="Logo Derecho" class="logo-right">
     </div>
   </header>
   <div class="container">
@@ -93,6 +96,7 @@
     // Verifica la compatibilidad del navegador
     var language = "";
     var transcript;
+    var canviLang = document.getElementById('titLang');
 
     let translations;
 
@@ -129,6 +133,8 @@
       function stopListening() {
         recognition.stop();
         outputIn.value = `${transcript}`;
+        console.log(transcript);
+        convertToSpeech(document.getElementById("info").value);
       }
 
       function textToSpeech(text) {
@@ -147,18 +153,37 @@
       } else if (event.code === 'Space') {
         // Detener la escucha cuando se presiona "Espacio"
         stopListening();
-      } else if (event.code === 'c') {
-        canviCat();
-      } else if (event.code === 's') {
+        convertToSpeech(transcript);
+      } else if (event.code == 'c') {
+        recognition.lang = 'ca-ES'; // Código de idioma para catalán
+        canviLang.value = 'Català';
+      } else if (event.code == 's') {
         // Detener la escucha cuando se presiona "Espacio"
         canviEs();
-      } else if (event.code === 'e') {
+      } else if (event.code == 'e') {
         // Detener la escucha cuando se presiona "Espacio"
         canviAng();
       }
     });
+    function convertToSpeech(text) {
+      // Obtiene el texto del área de texto
+      //var textToSpeak = document.getElementById('textInput').value;
+      // Crea un nuevo objeto SpeechSynthesisUtterance
+      var utterance = new SpeechSynthesisUtterance(text);
+      console.log(text);
+      // Obtiene la lista de voces disponibles
+      var voices = window.speechSynthesis.getVoices();
+
+      // Selecciona una voz (puedes personalizar esto según las voces disponibles en tu navegador)
+      utterance.voice = voices[0];
+
+      // Inicia la síntesis de voz
+      window.speechSynthesis.speak(utterance);
+        }
+
+    
     function canviCat() {
-      recognition.lang = 'ca-ES'; // Código de idioma para catalán
+      
     }
     function canviAng() {
       recognition.lang = 'en-US'; // Código de idioma para inglés en Estados Unidos
