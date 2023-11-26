@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mi Página Web</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #393e46;
+    }
+
+    header {
+      background-color: #f0f0f0;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-left {
+      order: 1;
+    }
+
+    .logo-right {
+      order: 2;
+    }
+
+    img {
+      height: 2%;
+      width: auto;
+      /* ajusta la altura según tus necesidades */
+    }
+
+    h3 {
+      color: #fcda05;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .textbox {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      background-color: #fffbe0;
+      color: #222831;
+      margin-bottom: 20px;
+    }
+    #info {
+      margin-left: 25%
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo-left">
+      <img src="qaY4sfAy_400x400.jpg" alt="Logo Izquierdo">
+    </div>
+    <div class="logo-right">
+      <img src="Logo_Fundació_Bofill.png" alt="Logo Derecho">
+    </div>
+  </header>
+  <div class="container">
+    <h3>HACK EPS</h3>
+    <input id="output" type="text" class="textbox" placeholder="Haz clic y copia el texto"
+      value="Texto que el usuario puede copiar" readonly />
+  
+      <div class="alert alert-dark col-6" role="alert" id="info" >
+        - Para iniciar la grabación pulse "Enter" <br>
+        - Para detener la grabación pulse "Space" <br>
+        - Para cambiar el idioma pulse las siguientes teclas: <br>
+        - "c" Català <br>
+        - "s" Español <br>
+        - "e" English <br>
+      </div>
+    </div>
+  
+  <!--
+    <button onclick="startListening()">Iniciar reconocimiento de voz</button>
+    <button onclick="stopListening()">Detener reconocimiento de voz</button>-->
+  <script>
+    // Verifica la compatibilidad del navegador
+    var language = "";
+    var transcript;
+
+    let translations;
+
+    /*async function loadTranslations() {
+      const response = await fetch('translations.json');
+      translations = await response.json();
+    }*/
+
+    // Espera a que se cargue el archivo de traducciones antes de ejecutar el resto del código
+
+    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      const outputIn = document.getElementById('output');
+
+      recognition.lang = 'es-ES'; // Establece el idioma para el reconocimiento de voz
+      if (language !== "") recognition.lang = language;
+
+      recognition.onresult = function (event) {
+        transcript = event.results[0][0].transcript;//va reconociendo el texto
+        outputIn.value = `${transcript}`;
+        textToSpeech(transcript);
+      };
+
+      recognition.onerror = function (event) {
+        outputIn.value = `Error en el reconocimiento de voz: ${event.error}`;
+      };
+
+      function startListening() {
+        if (language !== "") recognition.lang = language;
+        outputIn.value = 'Escuchando...';
+        recognition.start();
+      }
+
+      function stopListening() {
+        recognition.stop();
+        outputIn.value = `${transcript}`;
+      }
+
+      function textToSpeech(text) {
+        const synthesis = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance(text);
+        synthesis.speak(utterance);
+      }
+    } else {
+      // El navegador no es compatible con el reconocimiento de voz
+      alert('El reconocimiento de voz no es compatible con este navegador.');
+    }
+    document.addEventListener('keydown', function (event) {
+      if (event.code === 'Enter') {
+        // Empezar a escuchar cuando se presiona "Enter"
+        startListening();
+      } else if (event.code === 'Space') {
+        // Detener la escucha cuando se presiona "Espacio"
+        stopListening();
+      } else if (event.code === 'c') {
+        canviCat();
+      } else if (event.code === 's') {
+        // Detener la escucha cuando se presiona "Espacio"
+        canviEs();
+      } else if (event.code === 'e') {
+        // Detener la escucha cuando se presiona "Espacio"
+        canviAng();
+      }
+    });
+    function canviCat() {
+      recognition.lang = 'ca-ES'; // Código de idioma para catalán
+    }
+    function canviAng() {
+      recognition.lang = 'en-US'; // Código de idioma para inglés en Estados Unidos
+    }
+    function canviEs() {
+      recognition.lang = 'es-ES';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
